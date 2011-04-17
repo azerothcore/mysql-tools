@@ -1,5 +1,26 @@
 #!/bin/bash
 #
+# ========================================================================================
+# Copyright (C) 2005-2010 UDW-SOFTWARE <http://udw.altervista.com/>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# This script will export all tables from specified db and tables in separated sql files
+# it can also export the full db in a single sql file.
+# =========================================================================================
+#
 # This script will import the contents of the sql/ directory to the MySQL database.
 # You can choose to import table by table (zp_world directory), or the entire db "full_world.sql"
 #
