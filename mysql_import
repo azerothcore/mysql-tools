@@ -1,0 +1,69 @@
+#!/bin/bash
+#
+# This script will import the contents of the sql/ directory to the MySQL database.
+# You can choose to import table by table (zp_world directory), or the entire db "full_world.sql"
+#
+# syntax: mysql_import <opt> <tables>
+# OPT -> 1/0  ( 1: by folder, 0: by full dump) default: 0
+# TABLES -> if OPT=1 , use "," to separate table names; ex: mysql_dump "" "table1,table2..tableN"    ..OR use "" to dump all tables.
+#
+
+. ./mysql_config
+
+# Table prefix
+PFX=
+
+function in_array() {
+  local x
+  ENTRY=$1
+  shift 1
+  ARRAY=( "$@" )
+  [ -z "${ARRAY}" ] && return 0
+  [ -z "${ENTRY}" ] && return 0
+  for x in ${ARRAY[@]}; do
+    [ "${x}" == "${ENTRY}" ] && return 1
+  done
+  return 0
+}
+
+function import ()
+{
+    echo -n "Importing $1 into $DB ..."
+    # Check if database exists
+    err=`echo "quit" | mysql$OPTS $DB 2>&1`
+    if [ $? != 0 ]; then
+        if echo "$err" | grep -q "Access denied"; then
+            echo -e "\nDATABASE $db EXISTS BUT USER $USER DOES NOT HAVE ACCESS TO IT, ABORTING"
+            exit
+        fi
+        echo -n "[creating $DB]"
+        if ! echo "CREATE DATABASE $DB;" | mysql$OPTS 2>/dev/null ; then
+            echo -e "\nDATABASE $DB DOES NOT EXIST AND I FAILED TO CREATE IT, ABORTING"
+            exit
+        fi
+    fi
+    mysql$OPTS $DB <$1
+    echo " done"
+}
+
+FULL=1;
+
+if [ ! -z "$1" ]; then 
+	FULL=$1; 
+fi
+if [ ! -z "$2" ]; then 
+	tables=$(echo $2 | tr "," "\n")
+fi
+
+if (($FULL != 1)); then
+	echo "importing full world file"
+	mysql$OPTS $DB < $FPATH
+else
+	if [ ! -z "$2" ]; then
+			import $TPATH/$2.sql
+	else
+		for x in $TPATH/*.sql; do
+			import $x
+		done
+	fi
+fi

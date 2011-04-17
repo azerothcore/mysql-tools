@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# This script will export all tables from specified db and tables in separated sql files
+# it can also export the full db in a single sql file.
+#
+# syntax: mysql_dump <database> <tables> <method>
+# options are not required, because default values are defined:
+# DATABASE -> specify database to dump, use "" for default ( see in mysql_config )
+# TABLES -> use "" to dump all tables. Use "," to separate table names; ex: mysql_dump "" "table1,table2..tableN" 
+# METHOD -> 0/1 (0: no fulldb,1: with fulldb) default: 1
+#
+
+. ./mysql_config
+
+if [ ! -z "$1" ]; then 
+ DB=$1;
+fi 
+
+DUMPOPTS="--skip-comments --skip-set-charset --extended-insert --order-by-primary"
+
+if [ ! -z "$2" ]; then 
+	arr=$(echo $2 | tr "," "\n")
+
+	for T in $arr
+	do
+		echo "exporting "$T;
+		mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql 
+	done
+	
+else 
+	for T in `mysql$OPTS -N -B -e 'show tables from '$DB`; \
+	   do echo "exporting "$T; \
+			mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql;
+	   done;
+fi
+
+FULL=1;
+if [ ! -z "$3" ]; then FULL=$3; fi
+
+if (($FULL!=0)); then   
+	echo 'exporting FULL '$DB' in single file';
+	mysqldump$OPTS $DUMPOPTS $DB | sed 's$),($),\n($g' > $FPATH;
+fi
+

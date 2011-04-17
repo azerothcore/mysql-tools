@@ -1,0 +1,41 @@
+#
+# HOW TO USE MYSQL_* tools
+#
+
+before starting to dump/import, please rename mysql_config.dist in mysql_config and change infos using your configurations
+
+to easy dump/import the database, use ./mysql_tools command, it do everything faster with default configurations instead if you want more detailed options
+use mysql_dump and mysql_import commands.
+
+mysql_tools utilization:
+
+#  This script automatically dump and import sql files
+#
+#	syntax: ./mysql_tools <opt> <tables>
+#	OPT -> dump/import   ( export / import tables )
+#	TABLES -> if OPT=1 , use "," to separate table names; ex: mysql_dump "" "table1,table2..tableN". Leave blank to dump all tables.
+#
+
+
+mysql_dump utilization: 
+
+# This script will export all tables from specified db and tables in separated sql files
+# it can also export the full db in a single sql file.
+#
+# syntax: ./mysql_dump <database> <tables> <method>
+# options are not required, because default values are defined:
+# DATABASE -> specify database to dump, use "" for default ( see in mysql_config )
+# TABLES -> use "" to dump all tables. Use "," to separate table names; ex: mysql_dump "" "table1,table2..tableN" 
+# METHOD -> 0/1 (0: no fulldb,1: with fulldb) default: 1
+#
+
+
+mysql_import utilization:
+
+# This script will import the contents of the sql/ directory to the MySQL database.
+# You can choose to import table by table (zp_world directory), or the entire db "full_world.sql"
+#
+# syntax: ./mysql_import <opt> <tables>
+# OPT -> 1/0  ( 1: by folder, 0: by full dump) default: 0
+# TABLES -> if OPT=1 , use "," to separate table names; ex: mysql_dump "" "table1,table2..tableN"    ..OR use "" to dump all tables.
+#
