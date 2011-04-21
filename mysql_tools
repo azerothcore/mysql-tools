@@ -20,29 +20,18 @@
 # This script will export all tables from specified db and tables in separated sql files
 # it can also export the full db in a single sql file.
 # =========================================================================================
-#
-#  This script automatically dump and import sql files
-#
-#	syntax: ./mysql_tools <opt> <tables>
-#	OPT -> dump/import   ( export / import tables )
-#	TABLES -> if OPT=1 , use "," to separate table names; ex: mysql_dump "" "table1,table2..tableN". Leave blank to dump all tables.
-#
 
 function main() {
 	if [ ! -z "$1" ]; then 
-	 if [ "$1" == "dump" ]; then 
-		./mysql_dump "" "$2" "1"
-		return
-	 elif [ "$1" == "import" ]; then
-		if [ ! -z "$2" ]; then 
-			./mysql_import 1 $2
+		if [ "$1" == "dump" ]; then 
+			./mysql_dump "$3" "$2" "$4" "$5"
 			return
-		else
-			./mysql_import 0 
+		elif [ "$1" == "import" ]; then
+			./mysql_import "$3" "$2" "$4" "$5"
 			return
 		fi
-	 fi
 	fi
 }
 
-main "$1" "$2"
+# OPT - Tables - database - full file - config path
+main "$1" "$2" "$3" "$4" "$5"

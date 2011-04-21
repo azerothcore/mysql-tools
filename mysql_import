@@ -20,18 +20,15 @@
 # This script will export all tables from specified db and tables in separated sql files
 # it can also export the full db in a single sql file.
 # =========================================================================================
-#
-# This script will import the contents of the sql/ directory to the MySQL database.
-# You can choose to import table by table (zp_world directory), or the entire db "full_world.sql"
-#
-# syntax: mysql_import <opt> <tables>
-# OPT -> 1/0  ( 1: by folder, 0: by full dump) default: 0
-# TABLES -> if OPT=1 , use "," to separate table names; ex: mysql_dump "" "table1,table2..tableN"    ..OR use "" to dump all tables.
-#
 
-. ./mysql_config
+if [ ! -z "$4" ]; then
+	source $4
+else
+	# check config from same folder
+	source ./mysql_config 
+fi;
 
-# Table prefix
+# Table prefix ( to implement )
 PFX=
 
 function in_array() {
@@ -67,13 +64,14 @@ function import ()
     echo " done"
 }
 
-FULL=1;
-
 if [ ! -z "$1" ]; then 
-	FULL=$1; 
+	DB=$1; 
 fi
 if [ ! -z "$2" ]; then 
 	tables=$(echo $2 | tr "," "\n")
+fi
+if [ ! -z "$3" ]; then 
+	CREATEFULL=$3; 
 fi
 
 if (($FULL != 1)); then

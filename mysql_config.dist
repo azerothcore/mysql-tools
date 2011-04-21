@@ -25,18 +25,31 @@
 # and is used by all the mysql_* scripts.
 #
 
+#
+#	MYSQL
+#
+
 # change these lines with your mysql config
 DB=test
-USER=user
-PASS=password
+USER=usr
+PASS=pwd
 HOST=localhost
 #SOCK=/var/lib/mysql/mysql.sock
 
-#file options
-#path of directory where extract separated tables ( DO NOT add slash at the end of the path )
+#
+#	File Options
+#
+
+# path of directory where extract separated tables ( without end slash )
 TPATH=./tables
-#path of file to extract database full dump
-FPATH=./full_db.sql
+
+# path of file to extract database full dump
+FPATH=./full/full.sql
+
+# switch to enable(1)/disable(0) auto creation of full file dump 
+# ( you can do it manually using command parameters )
+
+CREATEFULL=1
 
 OPTS=
 [ ! -z "$USER" ] && OPTS="$OPTS -u$USER"
