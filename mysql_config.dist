@@ -46,10 +46,10 @@ TPATH=./tables
 # path of file to extract database full dump
 FPATH=./full/full.sql
 
-# switch to enable(1)/disable(0) auto creation of full file dump 
+# switch to enable(1)/disable(0) the dump/import of full db file
 # ( you can do it manually using command parameters )
 
-CREATEFULL=1
+FULL=0
 
 OPTS=
 [ ! -z "$USER" ] && OPTS="$OPTS -u$USER"

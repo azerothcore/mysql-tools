@@ -50,9 +50,9 @@ else
 	   done;
 fi
 
-if [ ! -z "$3" ]; then CREATEFULL=$3; fi
+if [ ! -z "$3" ]; then FULL=$3; fi
 
-if (($CREATEFULL!=0)); then   
+if (($FULL!=0)); then   
 	echo 'exporting FULL '$DB' in single file';
 	mysqldump$OPTS $DUMPOPTS $DB | sed 's$),($),\n($g' > $FPATH;
 fi

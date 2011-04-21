@@ -71,10 +71,10 @@ if [ ! -z "$2" ]; then
 	tables=$(echo $2 | tr "," "\n")
 fi
 if [ ! -z "$3" ]; then 
-	CREATEFULL=$3; 
+	FULL=$3; 
 fi
 
-if (($FULL != 1)); then
+if (($FULL != 0)); then
 	echo "importing full world file"
 	mysql$OPTS $DB < $FPATH
 else
