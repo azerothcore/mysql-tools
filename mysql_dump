@@ -48,11 +48,12 @@ if [ ! -z "$2" ]; then
 else 
 	if (($TEXTDUMPS != 1)); then
 		for T in `mysql$OPTS -N -B -e 'show tables from '$DB`; \
-		   do echo "exporting "$T; \
+		   do 
+				echo "exporting "$T; \
 				mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql;
 		   done;
 	else
-		"exporting "$DB;
+		echo "exporting "$DB;
 		mysqldump$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
 	fi
 fi
