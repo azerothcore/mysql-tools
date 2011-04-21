@@ -32,22 +32,29 @@ if [ ! -z "$1" ]; then
  DB=$1;
 fi 
 
-DUMPOPTS="--skip-comments --skip-set-charset --extended-insert --order-by-primary"
-
 if [ ! -z "$2" ]; then 
 	arr=$(echo $2 | tr "," "\n")
 
 	for T in $arr
 	do
 		echo "exporting "$T;
-		mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql 
+		if (($TEXTDUMPS != 1)); then
+			mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql 
+		else
+			mysqldump$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
+		fi
 	done
 	
 else 
-	for T in `mysql$OPTS -N -B -e 'show tables from '$DB`; \
-	   do echo "exporting "$T; \
-			mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql;
-	   done;
+	if (($TEXTDUMPS != 1)); then
+		for T in `mysql$OPTS -N -B -e 'show tables from '$DB`; \
+		   do echo "exporting "$T; \
+				mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql;
+		   done;
+	else
+		"exporting "$DB;
+		mysqldump$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
+	fi
 fi
 
 if [ ! -z "$3" ]; then FULL=$3; fi

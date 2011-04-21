@@ -31,19 +31,6 @@ fi;
 # Table prefix ( to implement )
 PFX=
 
-function in_array() {
-  local x
-  ENTRY=$1
-  shift 1
-  ARRAY=( "$@" )
-  [ -z "${ARRAY}" ] && return 0
-  [ -z "${ENTRY}" ] && return 0
-  for x in ${ARRAY[@]}; do
-    [ "${x}" == "${ENTRY}" ] && return 1
-  done
-  return 0
-}
-
 function checkdb() {
     # Check if database exists
     err=`echo "quit" | mysql$OPTS $1 2>&1`
@@ -62,9 +49,13 @@ function checkdb() {
 
 function import ()
 {
-    echo -n "Importing $1 into $DB ..."
-    mysql$OPTS $DB <$1
-    echo " done"
+    echo "Importing $2 into $DB ..."
+	if (($1 != 0)); then
+		mysqlimport$OPTS $IMPORTOPTS_TEXT $DB $2
+	else
+		mysql$OPTS $DB <$2
+		echo " done"
+	fi
 }
 
 if [ ! -z "$1" ]; then 
@@ -85,10 +76,17 @@ if (($FULL != 0)); then
 	mysql$OPTS $DB < $FPATH
 else
 	if [ ! -z "$2" ]; then
-		import "$TPATH/$2.sql"
+		import "0" "$TPATH/$2.sql"
+		if (($TEXTDUMPS != 0)); then
+			import "1" "$TPATH/*.txt"
+		fi
 	else
 		for x in $TPATH/*.sql; do
-			import $x
+			import "0" "$x"
 		done
+		
+		if (($TEXTDUMPS != 0)); then
+			import "1" "$TPATH/*.txt"
+		fi
 	fi
 fi

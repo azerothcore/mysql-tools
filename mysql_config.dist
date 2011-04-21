@@ -48,12 +48,29 @@ FPATH=./full/full.sql
 
 # switch to enable(1)/disable(0) the dump/import of full db file
 # ( you can do it manually using command parameters )
-
 FULL=0
+
+# set 1 to enable --tab option for mysqldump and import data from it
+# it's very fast import/export process but doesn't utilize the insert query
+# ( NOTE: full db continue to be dumped with normal sql format ) 
+
+TEXTDUMPS=1
+
+
+#
+# TOOLS OPTIONS
+#
+
+#number of threads you want to use in TEXT import mode ( you can safely set it to your number of processor increasing process speed )
+THREADS=1
 
 OPTS=
 [ ! -z "$USER" ] && OPTS="$OPTS -u$USER"
 [ ! -z "$PASS" ] && OPTS="$OPTS -p$PASS"
 [ ! -z "$HOST" ] && OPTS="$OPTS -h$HOST"
 [ ! -z "$SOCK" ] && OPTS="$OPTS -S$SOCK"
+
+IMPORTOPTS_TEXT="--use-threads=$THREADS --local --compress --delete --lock-tables"
+
+DUMPOPTS="--skip-comments --skip-set-charset --extended-insert --order-by-primary --single-transaction --quick"
 
