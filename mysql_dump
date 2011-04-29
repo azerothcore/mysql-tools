@@ -32,6 +32,10 @@ if [ ! -z "$1" ]; then
  DB=$1;
 fi 
 
+if (($CLEANFOLDER!=0)); then
+	rm -rv $TPATH/*
+fi
+
 if [ ! -z "$2" ]; then 
 	arr=$(echo $2 | tr "," "\n")
 

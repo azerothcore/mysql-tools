@@ -43,6 +43,9 @@ HOST=localhost
 # path of directory where extract separated tables ( without end slash )
 TPATH=./tables
 
+# clean directory before dump, in this way non-existant db tables will be deleted
+CLEANFOLDER=1
+
 # path of file to extract database full dump
 FPATH=./full/full.sql
 
