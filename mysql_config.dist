@@ -43,21 +43,28 @@ HOST=localhost
 # path of directory where extract separated tables ( without end slash )
 TPATH=./tables
 
-# clean directory before dump, in this way non-existant db tables will be deleted
+# (boolean) clean directory before dump, in this way non-existant db tables will be deleted
 CLEANFOLDER=1
 
 # path of file to extract database full dump
 FPATH=./full/full.sql
 
-# switch to enable(1)/disable(0) the dump/import of full db file
+# (boolean) switch to enable(1)/disable(0) the dump/import of full db file
 # ( you can do it manually using command parameters )
 FULL=0
 
-# set 1 to enable --tab option for mysqldump and import data from it
+# (boolean) set 1 to enable --tab option for mysqldump and import data from it
 # it's very fast import/export process but doesn't utilize the insert query
-# ( NOTE: full db continue to be dumped with normal sql format ) 
+# NOTE: full db continue to be dumped with normal sql format
+# NOTE2: if you have problem with permissions ( mysql errorcode:13) mostly in linux
+# you can should enable CHMODE config and disable/edit
+# some protections such as AppArmor in Ubuntu or SELinux in Fedora..
 
 TEXTDUMPS=1
+
+# (boolean) allow to change "TPATH" folder permissions to enable mysql server writing
+
+CHMODE=0
 
 
 #
@@ -68,9 +75,9 @@ TEXTDUMPS=1
 THREADS=1
 
 OPTS=
+[ ! -z "$HOST" ] && OPTS="$OPTS --host=$HOST"
 [ ! -z "$USER" ] && OPTS="$OPTS -u$USER"
 [ ! -z "$PASS" ] && OPTS="$OPTS -p$PASS"
-[ ! -z "$HOST" ] && OPTS="$OPTS -h$HOST"
 [ ! -z "$SOCK" ] && OPTS="$OPTS -S$SOCK"
 
 IMPORTOPTS_TEXT="--use-threads=$THREADS --local --compress --delete --lock-tables"

@@ -30,7 +30,21 @@ fi
 
 if [ ! -z "$1" ]; then 
  DB=$1;
-fi 
+fi
+
+#change group instead mod
+#group=`ls -l tables | awk '{print $4}'`
+#if [ $group != "mysql" ]; then
+#    if (($CHMODE != 0)); then
+#       sudo chgrp -v mysql $TPATH
+#    fi
+#fi
+
+#change permissions for other users
+if (($CHMODE != 0)); then
+    echo "changing permissions.."
+    sudo chmod -v o=rwx $TPATH
+fi
 
 if (($CLEANFOLDER!=0)); then
 	rm -rv $TPATH/*

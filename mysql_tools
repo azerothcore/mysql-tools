@@ -21,13 +21,19 @@
 # it can also export the full db in a single sql file.
 # =========================================================================================
 
-function main() {
+if [ -L $0 ] ; then
+    DIR=$(dirname $(readlink -f $0)) ;
+else
+    DIR=$(dirname $0) ;
+fi ;
+
+function main {
 	if [ ! -z "$1" ]; then 
 		if [ "$1" == "dump" ]; then 
-			./mysql_dump "$3" "$2" "$4" "$5"
+			bash $DIR"/mysql_dump" "$3" "$2" "$4" "$5"
 			return
 		elif [ "$1" == "import" ]; then
-			./mysql_import "$3" "$2" "$4" "$5"
+			bash $DIR"/mysql_import" "$3" "$2" "$4" "$5"
 			return
 		fi
 	fi

@@ -22,16 +22,16 @@
 # =========================================================================================
 
 if [ ! -z "$4" ]; then
-	source $4
+	. $4
 else
 	# check config from same folder
-	source ./mysql_config 
-fi;
+	. ./mysql_config 
+fi
 
 # Table prefix ( to implement )
 PFX=
 
-function checkdb() {
+function checkdb {
     # Check if database exists
     err=`echo "quit" | mysql$OPTS $1 2>&1`
     if [ $? != 0 ]; then
@@ -47,7 +47,7 @@ function checkdb() {
     fi
 }
 
-function import ()
+function import
 {
     echo "Importing $2 into $DB ..."
 	if (($1 != 0)); then
