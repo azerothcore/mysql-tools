@@ -2,7 +2,8 @@
 # HOW TO USE MYSQL_* tools
 #
 
-before starting to dump/import, please rename mysql_config.dist in mysql_config and change infos using your configurations
+Before starting to dump/import, please rename mysql_config.dist in mysql_config and change infos using your configurations
+If you are using AppArmor , edit /etc/apparmor.d/usr.sbin.mysqld and add directory that must be used by the dump
 
 to easy dump/import the database, use ./mysql_tools command that includes dump and import scripts, instead if you need to separate the functions ,
  use ./mysql_dump and ./mysql_import.

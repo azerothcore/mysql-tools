@@ -1,0 +1,8 @@
+#!/bin/bash
+
+percorso="/home/giuseppe/WORKSPACE/works-hw2/HW2-repos/udw/mysqltool/"
+
+#carica configurazioni di default
+bash $percorso"mysql_tools" "$1" "$2" "$3" "$4" "$5"
+
+read -p "press any key to end"
