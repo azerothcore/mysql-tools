@@ -35,14 +35,14 @@ PFX=
 
 function checkdb {
     # Check if database exists
-    err=`echo "quit" | $BIN_DIRmysql$OPTS $1 2>&1`
+    err=`echo "quit" | $MYSQL$OPTS $1 2>&1`
     if [ $? != 0 ]; then
         if echo "$err" | grep -q "Access denied"; then
             echo -e "\nDATABASE $1 EXISTS BUT USER $USER DOES NOT HAVE ACCESS TO IT, ABORTING"
             exit
         fi
         echo -n "[creating $1]"
-        if ! echo "CREATE DATABASE $1;" | $MYSQL$OPTS 2>/dev/null ; then
+        if ! echo "CREATE DATABASE $1;" | $MYSQL$OPTS $1 2>/dev/null ; then
             echo -e "\nDATABASE $1 DOES NOT EXIST AND I FAILED TO CREATE IT, ABORTING"
             exit
         fi
