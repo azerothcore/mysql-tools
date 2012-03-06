@@ -22,25 +22,27 @@
 # =========================================================================================
 
 if [ ! -z "$4" ]; then
-	. $4
+	source $4
 else
 	# check config from same folder
-	. ./mysql_config 
+	source $(dirname $0)/mysql_config 
 fi
+
+source $(dirname $0)/shared_def
 
 # Table prefix ( to implement )
 PFX=
 
 function checkdb {
     # Check if database exists
-    err=`echo "quit" | mysql$OPTS $1 2>&1`
+    err=`echo "quit" | $BIN_DIRmysql$OPTS $1 2>&1`
     if [ $? != 0 ]; then
         if echo "$err" | grep -q "Access denied"; then
             echo -e "\nDATABASE $1 EXISTS BUT USER $USER DOES NOT HAVE ACCESS TO IT, ABORTING"
             exit
         fi
         echo -n "[creating $1]"
-        if ! echo "CREATE DATABASE $1;" | mysql$OPTS 2>/dev/null ; then
+        if ! echo "CREATE DATABASE $1;" | $MYSQL$OPTS 2>/dev/null ; then
             echo -e "\nDATABASE $1 DOES NOT EXIST AND I FAILED TO CREATE IT, ABORTING"
             exit
         fi
@@ -51,9 +53,9 @@ function import
 {
     echo "Importing $2 into $DB ..."
 	if (($1 != 0)); then
-		mysqlimport$OPTS $IMPORTOPTS_TEXT $DB $2
+		$MYSQLIMPORT$OPTS $IMPORTOPTS_TEXT $DB $2
 	else
-		mysql$OPTS $DB <$2
+		$MYSQL$OPTS $DB <$2
 		echo " done"
 	fi
 }
@@ -73,7 +75,7 @@ fi
 
 if (($FULL != 0)); then
 	echo "importing full world file"
-	mysql$OPTS $DB < $FPATH
+	$MYSQL$OPTS $DB < $FPATH
 else
 	if [ ! -z "$2" ]; then
 		import "0" "$TPATH/$2.sql"

@@ -25,8 +25,10 @@ if [ ! -z "$4" ]; then
 	source "$4"
 else
 	# check config from same folder
-	source ./mysql_config 
+	source $(dirname $0)/mysql_config 
 fi
+
+source $(dirname $0)/shared_def
 
 if [ ! -z "$1" ]; then 
  DB=$1;
@@ -57,9 +59,9 @@ if [ ! -z "$2" ]; then
 	do
 		echo "exporting "$T;
 		if (($TEXTDUMPS != 1)); then
-			mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql 
+			$MYSQLDUMP$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql 
 		else
-			mysqldump$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
+			$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
 		fi
 	done
 	
@@ -68,11 +70,11 @@ else
 		for T in `mysql$OPTS -N -B -e 'show tables from '$DB`; \
 		   do 
 				echo "exporting "$T; \
-				mysqldump$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql;
+				$MYSQLDUMP$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql;
 		   done;
 	else
 		echo "exporting "$DB;
-		mysqldump$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
+		$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
 	fi
 fi
 
@@ -80,6 +82,6 @@ if [ ! -z "$3" ]; then FULL=$3; fi
 
 if (($FULL!=0)); then   
 	echo 'exporting FULL '$DB' in single file';
-	mysqldump$OPTS $DUMPOPTS $DB | sed 's$),($),\n($g' > $FPATH;
+	$MYSQLDUMP$OPTS $DUMPOPTS $DB | sed 's$),($),\n($g' > $FPATH;
 fi
 
