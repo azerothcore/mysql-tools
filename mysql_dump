@@ -48,11 +48,17 @@ if (($CHMODE != 0)); then
     sudo chmod -v o=rwx $TPATH
 fi
 
+#clean old tables
 if (($CLEANFOLDER!=0)); then
 	rm -rv $TPATH/*
 fi
 
+#create the path recursively
+
+mkdir -p $TPATH
+
 if [ ! -z "$2" ]; then 
+#if tables are specified in parameters then..
 	arr=$(echo $2 | tr "," "\n")
 
 	for T in $arr
@@ -66,6 +72,7 @@ if [ ! -z "$2" ]; then
 	done
 	
 else 
+#else get all tables from selected db
 	if (($TEXTDUMPS != 1)); then
 		for T in `mysql$OPTS -N -B -e 'show tables from '$DB`; \
 		   do 
@@ -79,7 +86,7 @@ else
 fi
 
 if [ ! -z "$3" ]; then FULL=$3; fi
-
+# export full file if option is enabled
 if (($FULL!=0)); then   
 	echo 'exporting FULL '$DB' in single file';
 	$MYSQLDUMP$OPTS $DUMPOPTS $DB | sed 's$),($),\n($g' > $FPATH;
