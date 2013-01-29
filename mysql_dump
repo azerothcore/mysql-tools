@@ -21,14 +21,18 @@
 # it can also export the full db in a single sql file.
 # =========================================================================================
 
+# check config from same folder and include only if exists
+CONF_FILE=$MT_DIR"/mysql_config"
+if [ -f "$CONF_FILE" ]; then
+    source "$CONF_FILE"
+fi;
+
+#overwrite configs if file exists and variables are defined
 if [ ! -z "$4" ]; then
 	source "$4"
-else
-	# check config from same folder
-	source $(dirname $0)/mysql_config 
-fi
+fi;
 
-source $(dirname $0)/shared_def
+source $MT_DIR"/shared_def"
 
 if [ ! -z "$1" ]; then 
  DB=$1;
@@ -65,30 +69,33 @@ if [ ! -z "$2" ]; then
 	do
 		echo "exporting "$T;
 		if (($TEXTDUMPS != 1)); then
-			$MYSQLDUMP$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql 
+			echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql 
 		else
-			$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
+			echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
 		fi
 	done
 	
 else 
 #else get all tables from selected db
-	if (($TEXTDUMPS != 1)); then
-		for T in `mysql$OPTS -N -B -e 'show tables from '$DB`; \
-		   do 
-				echo "exporting "$T; \
-				$MYSQLDUMP$OPTS $DUMPOPTS $DB $T | sed 's$),($),\n($g' > $TPATH/$T.sql;
-		   done;
-	else
-		echo "exporting "$DB;
-		$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ $DB $T
-	fi
+        CMD="mysql$OPTS -N -B -e 'show tables from \`$MYSQL_DB\`'"
+        echo "command: "$CMD
+        for T in $(eval $CMD)
+        do 
+            if (($TEXTDUMPS != 1)); then
+                echo "exporting "$T;
+                echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql;
+            else
+                echo "exporting "$MYSQL_DB" tables: "$T;
+                echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
+            fi
+        done;
+
 fi
 
 if [ ! -z "$3" ]; then FULL=$3; fi
 # export full file if option is enabled
 if (($FULL!=0)); then   
-	echo 'exporting FULL '$DB' in single file';
-	$MYSQLDUMP$OPTS $DUMPOPTS $DB | sed 's$),($),\n($g' > $FPATH;
+	echo 'exporting FULL '$MYSQL_DB' in single file';
+	echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' ") | sed 's$),($),\n($g' > $FPATH;
 fi
 

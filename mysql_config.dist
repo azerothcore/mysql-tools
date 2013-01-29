@@ -74,12 +74,6 @@ CHMODE=0
 #number of threads you want to use in TEXT import mode ( you can safely set it to your number of processor increasing process speed )
 THREADS=1
 
-OPTS=
-[ ! -z "$HOST" ] && OPTS="$OPTS --host=$HOST"
-[ ! -z "$USER" ] && OPTS="$OPTS -u$USER"
-[ ! -z "$PASS" ] && OPTS="$OPTS -p$PASS"
-[ ! -z "$SOCK" ] && OPTS="$OPTS -S$SOCK"
-
 IMPORTOPTS_TEXT="--use-threads=$THREADS --local --compress --delete --lock-tables"
 
 DUMPOPTS="--skip-comments --skip-set-charset --extended-insert --order-by-primary --single-transaction --quick"

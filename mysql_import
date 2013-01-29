@@ -21,50 +21,56 @@
 # it can also export the full db in a single sql file.
 # =========================================================================================
 
-if [ ! -z "$4" ]; then
-	source $4
-else
-	# check config from same folder
-	source $(dirname $0)/mysql_config 
-fi
+# check config from same folder and include only if exists
+CONF_FILE=$MT_DIR"/mysql_config"
+if [ -f "$CONF_FILE" ]; then
+    source "$CONF_FILE"
+fi;
 
-source $(dirname $0)/shared_def
+#overwrite configs if file exists and variables are defined
+if [ ! -z "$4" ]; then
+	source "$4"
+fi;
+
+source $MT_DIR"/shared_def"
 
 # Table prefix ( to implement )
 PFX=
 
+# par 1 : db_name
 function checkdb {
     # Check if database exists
-    err=`echo "quit" | $MYSQL$OPTS $1 2>&1`
+    err=`echo "quit" | $(eval "$MYSQL$OPTS '$1'") 2>&1`
     if [ $? != 0 ]; then
         if echo "$err" | grep -q "Access denied"; then
-            echo -e "\nDATABASE $1 EXISTS BUT USER $USER DOES NOT HAVE ACCESS TO IT, ABORTING"
+            echo -e "\nDATABASE $1 EXISTS BUT USER $MYSQL_USER DOES NOT HAVE ACCESS TO IT, ABORTING"
             exit
         fi
         echo -n "[creating $1]"
-        if ! echo "CREATE DATABASE $1;" | $MYSQL$OPTS $1 2>/dev/null ; then
+        if ! echo "CREATE DATABASE $1;" | $(eval "$MYSQL$OPTS" )  2>/dev/null  ; then
             echo -e "\nDATABASE $1 DOES NOT EXIST AND I FAILED TO CREATE IT, ABORTING"
             exit
         fi
     fi
 }
 
+#par1: is_text_file ;  par2: file
 function import
 {
-    echo "Importing $2 into $DB ..."
+    echo "Importing $2 into $MYSQL_DB (text: $1) ..."
 	if (($1 != 0)); then
-		$MYSQLIMPORT$OPTS $IMPORTOPTS_TEXT $DB $2
+		$(eval "$MYSQLIMPORT$OPTS $IMPORTOPTS_TEXT '$MYSQL_DB' '$2'")
 	else
-		$MYSQL$OPTS $DB <$2
-		echo " done"
+		$(eval "$MYSQL$OPTS '$MYSQL_DB'" < "$2" ) 
 	fi
+        echo " done"
 }
 
 if [ ! -z "$1" ]; then 
 	DB=$1; 
 fi
 
-checkdb $DB
+checkdb $MYSQL_DB
 
 if [ ! -z "$2" ]; then 
 	tables=$(echo $2 | tr "," "\n")
@@ -75,7 +81,7 @@ fi
 
 if (($FULL != 0)); then
 	echo "importing full world file"
-	$MYSQL$OPTS $DB < $FPATH
+	$(eval "$MYSQL$OPTS '$MYSQL_DB'") < $FPATH
 else
 	if [ ! -z "$2" ]; then
 		import "0" "$TPATH/$2.sql"
