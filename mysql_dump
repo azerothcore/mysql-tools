@@ -62,7 +62,7 @@ if [ ! -z $TPATH ]; then
 
 	#clean old tables
 	if (($CLEANFOLDER != 0)); then
-		rm -rv $TPATH/*
+		rm -rvf $TPATH/*
 	fi
 	
 	if [ ! -z "$2" ]; then 
@@ -73,7 +73,11 @@ if [ ! -z $TPATH ]; then
 		do
 			echo "exporting "$T;
 			if (($TEXTDUMPS != 1)); then
-				echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql 
+				FILE="$TPATH/$T.sql"
+				if [ -f $FILE ]; then
+					rm -f $FILE
+				fi
+				eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' -r $FILE"
 			else
 				echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
 			fi
@@ -87,7 +91,11 @@ if [ ! -z $TPATH ]; then
 			do 
 				if (($TEXTDUMPS != 1)); then
 					echo "exporting "$T;
-					echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql;
+					FILE="$TPATH/$T.sql"
+					if [ -f $FILE ]; then
+						rm -f $FILE
+					fi
+					eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' -r $FILE"
 				else
 					echo "exporting "$MYSQL_DB" tables: "$T;
 					echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
@@ -102,7 +110,6 @@ if [ ! -z "$3" ]; then FULL=$3; fi
 if (($FULL!=0)); then   
 	echo 'exporting FULL '$MYSQL_DB' in single file';
 	rm -f $FPATH
-	eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' -r $FPATH";
-	sed -i 's$),($),\n($g' $FPATH
+	eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' -r $FPATH"
 fi
 

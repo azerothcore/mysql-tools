@@ -65,9 +65,9 @@ function import
 {
     echo "Importing $2 into $MYSQL_DB (text: $1) ..."
 	if (($1 != 0)); then
-		$(eval "$MYSQLIMPORT$OPTS $IMPORTOPTS_TEXT '$MYSQL_DB' '$2'")
+		eval "$MYSQLIMPORT$OPTS $IMPORTOPTS_TEXT '$MYSQL_DB' '$2'"
 	else
-		$(eval "$MYSQL$OPTS '$MYSQL_DB'" < "$2" ) 
+		eval "$MYSQL$OPTS '$MYSQL_DB'" < "$2" 
 	fi
         echo " done"
 }
@@ -92,15 +92,19 @@ else
 	if [ ! -z "$2" ]; then
 		import "0" "$TPATH/$2.sql"
 		if (($TEXTDUMPS != 0)); then
-			import "1" "$TPATH/*.txt"
+			for x in $TPATH/*.txt; do
+				import "1" "$x"
+			done
 		fi
 	else
 		for x in $TPATH/*.sql; do
 			import "0" "$x"
 		done
-		
+
 		if (($TEXTDUMPS != 0)); then
-			import "1" "$TPATH/*.txt"
+			for x in $TPATH/*.txt; do
+				import "1" "$x"
+			done
 		fi
 	fi
 fi
