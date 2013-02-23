@@ -64,12 +64,26 @@ function checkdb {
 function import
 {
     echo "Importing $2 into $MYSQL_DB (text: $1) ..."
+	
+	SQL="SET FOREIGN_KEY_CHECKS = 0;"
+	#eval "$MYSQL$OPTS -e \"SET FOREIGN_KEY_CHECKS = 0\" '$MYSQL_DB'" #disable foreign check
+	
+	FILE=$2	
 	if (($1 != 0)); then
-		eval "$MYSQLIMPORT$OPTS $IMPORTOPTS_TEXT '$MYSQL_DB' '$2'"
+		#eval "$MYSQLIMPORT$OPTS $IMPORTOPTS_TEXT '$MYSQL_DB' $2"
+		TABLE=${FILE##*/}
+		TABLE=${TABLE%.txt}
+		SQL+="LOAD DATA LOCAL INFILE '$2' INTO TABLE $MYSQL_DB.$TABLE;"
 	else
-		eval "$MYSQL$OPTS '$MYSQL_DB'" < "$2" 
+		#eval "$MYSQL$OPTS '$MYSQL_DB'" < "$2" 
+		SQL+="SOURCE $2;"
 	fi
-        echo " done"
+	#eval "$MYSQL$OPTS -e \"SET FOREIGN_KEY_CHECKS = 1\" '$MYSQL_DB'" #enable foreign check
+	SQL+="SET FOREIGN_KEY_CHECKS = 1";
+	
+	eval "$MYSQL$OPTS -e \"$SQL\" '$MYSQL_DB'"
+	
+	echo " done"
 }
 
 if [ ! -z "$1" ]; then 
@@ -90,7 +104,7 @@ if (($FULL != 0)); then
 	$(eval "$MYSQL$OPTS '$MYSQL_DB'") < $FPATH
 else
 	if [ ! -z "$2" ]; then
-		import "0" "$TPATH/$2.sql"
+		import "0" "$TPATH/$2.sql" # TODO we should check if it's a set of tables before
 		if (($TEXTDUMPS != 0)); then
 			for x in $TPATH/*.txt; do
 				import "1" "$x"
