@@ -32,6 +32,8 @@ function main {
 			source $MT_DIR"/mysql_import" "$3" "$2" "$4" "$5"
 			return
 		fi
+	else
+		echo "!!no command specified!!"
 	fi
 }
 

@@ -21,6 +21,7 @@
 # it can also export the full db in a single sql file.
 # =========================================================================================
 
+echo "starting import process.."
 # check config from same folder and include only if exists
 CONF_FILE=$MT_DIR"/mysql_config"
 if [ -f "$CONF_FILE" ]; then

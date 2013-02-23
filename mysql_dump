@@ -21,6 +21,7 @@
 # it can also export the full db in a single sql file.
 # =========================================================================================
 
+echo "starting dump process.."
 # check config from same folder and include only if exists
 CONF_FILE=$MT_DIR"/mysql_config"
 if [ -f "$CONF_FILE" ]; then
@@ -35,7 +36,7 @@ fi;
 source $MT_DIR"/shared_def"
 
 if [ ! -z "$1" ]; then 
- DB=$1;
+ MYSQL_DB=$1;
 fi
 
 #change group instead mod
@@ -48,8 +49,9 @@ fi
 
 #change permissions for other users
 if [ ! -z $TPATH ]; then
-	if [ !-d "$TPATH" ]; then
+	if [ ! -d "$TPATH" ]; then
 		#create the path recursively
+		echo "creating dir: $TPATH.."
 		mkdir -p "$TPATH"
 	fi
 	
@@ -79,7 +81,7 @@ if [ ! -z $TPATH ]; then
 		
 	else 
 	#else get all tables from selected db
-			CMD="mysql$OPTS -N -B -e 'show tables from \`$MYSQL_DB\`'"
+			CMD="$MYSQL$OPTS -N -B -e 'show tables from \`$MYSQL_DB\`'"
 			echo "command: "$CMD
 			for T in $(eval $CMD)
 			do 
@@ -99,6 +101,8 @@ if [ ! -z "$3" ]; then FULL=$3; fi
 # export full file if option is enabled
 if (($FULL!=0)); then   
 	echo 'exporting FULL '$MYSQL_DB' in single file';
-	echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' ") | sed 's$),($),\n($g' > $FPATH;
+	rm -f $FPATH
+	eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' -r $FPATH";
+	sed -i 's$),($),\n($g' $FPATH
 fi
 

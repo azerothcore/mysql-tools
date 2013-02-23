@@ -30,11 +30,11 @@
 #
 
 # change these lines with your mysql config
-DB=test
-USER=usr
-PASS=pwd
-HOST=localhost
-#SOCK=/var/lib/mysql/mysql.sock
+MYSQL_DB=test
+MYSQL_USER=usr
+MYSQL_PASS=pwd
+MYSQL_HOST=localhost
+#MYSQL_SOCK=/var/lib/mysql/mysql.sock
 
 #
 #	File Options
