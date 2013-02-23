@@ -35,6 +35,11 @@ fi;
 
 source $MT_DIR"/shared_def"
 
+if [ ! -z "$1" ]; then 
+ MYSQL_DB=$1;
+fi
+
+
 # Table prefix ( to implement )
 PFX=
 
