@@ -47,49 +47,52 @@ fi
 #fi
 
 #change permissions for other users
-if (($CHMODE != 0)); then
-    echo "changing permissions.."
-    sudo chmod -v o=rwx $TPATH
-fi
-
-#clean old tables
-if (($CLEANFOLDER!=0)); then
-	rm -rv $TPATH/*
-fi
-
-#create the path recursively
-
-mkdir -p $TPATH
-
-if [ ! -z "$2" ]; then 
-#if tables are specified in parameters then..
-	arr=$(echo $2 | tr "," "\n")
-
-	for T in $arr
-	do
-		echo "exporting "$T;
-		if (($TEXTDUMPS != 1)); then
-			echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql 
-		else
-			echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
-		fi
-	done
+if [ ! -z $TPATH ]; then
+	if [ !-d "$TPATH" ]; then
+		#create the path recursively
+		mkdir -p "$TPATH"
+	fi
 	
-else 
-#else get all tables from selected db
-        CMD="mysql$OPTS -N -B -e 'show tables from \`$MYSQL_DB\`'"
-        echo "command: "$CMD
-        for T in $(eval $CMD)
-        do 
-            if (($TEXTDUMPS != 1)); then
-                echo "exporting "$T;
-                echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql;
-            else
-                echo "exporting "$MYSQL_DB" tables: "$T;
-                echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
-            fi
-        done;
+	if (($CHMODE != 0)); then
+		echo "changing permissions.."
+		sudo chmod -v o=rwx $TPATH
+	fi
 
+	#clean old tables
+	if (($CLEANFOLDER != 0)); then
+		rm -rv $TPATH/*
+	fi
+	
+	if [ ! -z "$2" ]; then 
+	#if tables are specified in parameters then..
+		arr=$(echo $2 | tr "," "\n")
+
+		for T in $arr
+		do
+			echo "exporting "$T;
+			if (($TEXTDUMPS != 1)); then
+				echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql 
+			else
+				echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
+			fi
+		done
+		
+	else 
+	#else get all tables from selected db
+			CMD="mysql$OPTS -N -B -e 'show tables from \`$MYSQL_DB\`'"
+			echo "command: "$CMD
+			for T in $(eval $CMD)
+			do 
+				if (($TEXTDUMPS != 1)); then
+					echo "exporting "$T;
+					echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T'") | sed 's$),($),\n($g' > $TPATH/$T.sql;
+				else
+					echo "exporting "$MYSQL_DB" tables: "$T;
+					echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
+				fi
+			done;
+
+	fi
 fi
 
 if [ ! -z "$3" ]; then FULL=$3; fi

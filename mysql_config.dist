@@ -57,7 +57,7 @@ FULL=0
 # it's very fast import/export process but doesn't utilize the insert query
 # NOTE: full db continue to be dumped with normal sql format
 # NOTE2: if you have problem with permissions ( mysql errorcode:13) mostly in linux
-# you can should enable CHMODE config and disable/edit
+# you should enable CHMODE config and disable/edit
 # some protections such as AppArmor in Ubuntu or SELinux in Fedora..
 
 TEXTDUMPS=1
