@@ -38,7 +38,7 @@ mysql_dump utilization:
 mysql_import utilization:
 
 # This script will import the contents of the sql/ directory to the MySQL database.
-# You can choose to import table by table (zp_world directory), or the entire db "full_world.sql"
+# You can choose to import table by table, or the entire db
 #
 # syntax: ./mysql_import <database> <tables> <method> <configpath>
 # options are not required, because values can be defined in config file:
