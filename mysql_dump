@@ -12,7 +12,11 @@ fi;
 
 #overwrite configs if file exists and variables are defined
 if [ ! -z "$4" ]; then
-	source "$4"
+    if [ -e "$4" ]; then
+        source "$4"
+    else # if 4th parameter is not a file, then try to eval
+        eval "$4"
+    fi;
 fi;
 
 source $MT_DIR"/shared_def"
