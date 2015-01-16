@@ -9,3 +9,5 @@ mysql_tools_(for usr-local-bin)
 *.orig
 *.patch
 callgrind.out.*
+
+.upt.json
