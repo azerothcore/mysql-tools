@@ -5,24 +5,25 @@
 
 echo "starting import process.."
 # check config from same folder and include only if exists
-CONF_FILE=$MT_DIR"/mysql_config"
+CONF_FILE=$MT_DIR"/mysql-config"
 if [ -f "$CONF_FILE" ]; then
     source "$CONF_FILE"
 fi;
 
 #overwrite configs if file exists and variables are defined
-if [ -e "$4" ]; then
-    source "$4"
-else # if 4th parameter is not a file, then try to eval
-    eval "$4"
+if [ ! -z "$4" ]; then
+    if [ -e "$4" ]; then
+        source "$4"
+    else # if 4th parameter is not a file, then try to eval
+        eval "$4"
+    fi;
 fi;
 
-source $MT_DIR"/shared_def"
+source $MT_DIR"/shared-def"
 
 if [ ! -z "$1" ]; then 
  MYSQL_DB=$1;
 fi
-
 
 # Table prefix ( to implement )
 PFX=

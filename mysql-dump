@@ -5,7 +5,7 @@
 
 echo "starting dump process.."
 # check config from same folder and include only if exists
-CONF_FILE=$MT_DIR"/mysql_config"
+CONF_FILE=$MT_DIR"/mysql-config"
 if [ -f "$CONF_FILE" ]; then
     source "$CONF_FILE"
 fi;
@@ -19,7 +19,7 @@ if [ ! -z "$4" ]; then
     fi;
 fi;
 
-source $MT_DIR"/shared_def"
+source $MT_DIR"/shared-def"
 
 if [ ! -z "$1" ]; then 
  MYSQL_DB=$1;

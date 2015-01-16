@@ -8,10 +8,10 @@ MT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 function main {
 	if [ ! -z "$1" ]; then 
 		if [ "$1" == "dump" ]; then 
-			source $MT_DIR"/mysql_dump" "$3" "$2" "$4" "$5"
+			source $MT_DIR"/mysql-dump" "$3" "$2" "$4" "$5"
 			return
 		elif [ "$1" == "import" ]; then
-			source $MT_DIR"/mysql_import" "$3" "$2" "$4" "$5"
+			source $MT_DIR"/mysql-import" "$3" "$2" "$4" "$5"
 			return
 		fi
 	else
