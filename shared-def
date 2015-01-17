@@ -6,6 +6,7 @@
 MYSQL="mysql"
 MYSQLIMPORT="mysqlimport"
 MYSQLDUMP="mysqldump"
+DUMPPARSER=$MT_DIR"/bin/dump-parser"
 
 #empty for bash commands
 WIN_BIN=0
@@ -21,9 +22,9 @@ else
 fi;
 
 if (($WIN_BIN != 0)); then
-	MYSQL=$MT_DIR"/$MYSQL"
-	MYSQLIMPORT=$MT_DIR"/$MYSQLIMPORT"
-	MYSQLDUMP=$MT_DIR"/$MYSQLDUMP"
+	MYSQL=$MT_DIR"/bin/$MYSQL"
+	MYSQLIMPORT=$MT_DIR"/bin/$MYSQLIMPORT"
+	MYSQLDUMP=$MT_DIR"/bin/$MYSQLDUMP"
 fi;
 
 OPTS=

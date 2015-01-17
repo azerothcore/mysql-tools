@@ -93,9 +93,15 @@ fi
 
 if [ ! -z "$3" ]; then FULL=$3; fi
 # export full file if option is enabled
-if (($FULL!=0)); then   
+if (($FULL != 0)); then   
 	echo 'exporting FULL '$MYSQL_DB' in single file';
 	rm -f $FPATH
-	eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' -r $FPATH"
+
+        if (($PARSEDUMP != 0)); then
+            echo "Parsing enabled";
+            eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' | $DUMPPARSER > $FPATH"
+        else
+            eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' -r $FPATH"
+        fi
 fi
 
