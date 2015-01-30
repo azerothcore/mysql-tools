@@ -1,7 +1,9 @@
-// gcc -O2 -Wall -pedantic dump-parser.c -o dump-parser
-// Usage: cat dump.sql | dump-parser
-//   Or : dump-parser dump.sql
-// bug : the parser will fail if the 10001st character of a line is an escaped quote, it will see it as an unescaped quote.
+/* gcc -O2 -Wall -pedantic dump-parser.c -o dump-parser
+ Usage: cat dump.sql | dump-parser
+   Or : dump-parser dump.sql
+ bugs :
+ * the parser will fail if the 10001st character of a line is an escaped quote, it will see it as an unescaped quote.
+*/
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +45,7 @@ int main(int argc, char *argv[])
     while (fgets(buffer, BUFFER, file) != NULL) {
         line = buffer;
  
-        // skip commented
+        /* skip commented */
         if (comment || is_commented(line)) {
             comment = line[strlen(line) - 1] != '\n';
             fputs(line, stdout);
@@ -52,14 +54,14 @@ int main(int argc, char *argv[])
  
             nullchar:
             while (line[pos] != '\0') {
-                // if we are still in escape state, we need to check first char.
+                /* if we are still in escape state, we need to check first char. */
                 if (!escape) {
-                    // find any character in ()'
+                     /* find any character in ()' */
                     pos = strcspn(line, "()'\\");
                 }
  
                 if (pos > 0) {
-                    // print before match
+                    /* print before match */
                     printf("%.*s", pos, line);
                 }
  
@@ -81,7 +83,7 @@ int main(int argc, char *argv[])
                             if (parenthesis > 0) {
                                 parenthesis--;
                             } else {
-                                // whoops
+                                /* whoops */
                                 puts("\n");
                                 fputs(line, stdout);
                                 fputs("Found closing parenthesis without opening one.\n", stderr);
@@ -115,7 +117,7 @@ int main(int argc, char *argv[])
                         break;
                 }
  
-                // print char then skip it (to make sure we don’t double match)
+                /* print char then skip it (to make sure we don’t double match) */
                 putchar(line[pos]);
                 line = line + pos + 1;
                 pos = 0;

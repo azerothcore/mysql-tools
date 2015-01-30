@@ -63,7 +63,13 @@ if [ ! -z $TPATH ]; then
 				if [ -f $FILE ]; then
 					rm -f $FILE
 				fi
-				eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' -r $FILE"
+
+                                if (($PARSEDUMP != 0)); then
+                                    echo "Parsing enabled";
+                                    eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' | $DUMPPARSER > $FILE"
+                                else
+                                    eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' -r $FILE"
+                                fi
 			else
 				echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
 			fi
@@ -81,7 +87,13 @@ if [ ! -z $TPATH ]; then
 					if [ -f $FILE ]; then
 						rm -f $FILE
 					fi
-					eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' -r $FILE"
+
+                                        if (($PARSEDUMP != 0)); then
+                                            echo "Parsing enabled on file "$FILE;
+                                            eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' | $DUMPPARSER > $FILE"
+                                        else
+                                            eval "$MYSQLDUMP$OPTS $DUMPOPTS '$MYSQL_DB' '$T' -r $FILE"
+                                        fi
 				else
 					echo "exporting "$MYSQL_DB" tables: "$T;
 					echo $(eval "$MYSQLDUMP$OPTS $DUMPOPTS --tab=$TPATH/ '$MYSQL_DB' '$T'")
